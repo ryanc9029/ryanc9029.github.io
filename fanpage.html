@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Justin Bieber Fanpage</title>
+  <meta name="description" content="A sleek, responsive fanpage for Justin Bieber using only HTML, CSS and JavaScript."/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0b10;        /* page background */
+      --card:#11131a;      /* card background */
+      --muted:#aab1c3;     /* subtle text */
+      --text:#e8ecf5;      /* main text */
+      --brand:#7cc4ff;     /* accent */
+      --brand-2:#8ef5da;   /* second accent */
+      --glass:rgba(255,255,255,0.06);
+      --shadow:0 10px 30px rgba(0,0,0,.45);
+      --radius:22px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 600px at 10% -10%, rgba(124,196,255,.08), transparent 60%),
+                  radial-gradient(1000px 500px at 110% 0%, rgba(142,245,218,.08), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+      line-height:1.6;
+    }
+
+    /* ---------- Navbar ---------- */
+    header{
+      position:sticky; top:0; z-index:20; backdrop-filter:saturate(180%) blur(10px);
+      background:linear-gradient(180deg, rgba(11,11,16,.8), rgba(11,11,16,.35));
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .nav{max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:14px 20px}
+    .logo{display:flex; gap:10px; align-items:center; font-weight:800; letter-spacing:.4px}
+    .logo .dot{height:10px; width:10px; border-radius:50%; background:linear-gradient(135deg,var(--brand),var(--brand-2)); box-shadow:0 0 16px rgba(140,230,220,.7)}
+    nav a{color:var(--text); text-decoration:none; margin:0 10px; padding:10px 12px; border-radius:12px; opacity:.9}
+    nav a:hover{background:var(--glass)}
+    .cta{border:1px solid rgba(140,230,220,.5)}
+
+    /* ---------- Hero ---------- */
+    .hero{
+      position:relative; overflow:hidden; border-bottom:1px solid rgba(255,255,255,.06);
+      background:linear-gradient(to bottom, rgba(9,11,17,.7), rgba(9,11,17,.2)), url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1600&auto=format&fit=crop');
+      /* ^ Placeholder crowd/concert image from Unsplash. Replace with a Bieber concert photo you have rights to. */
+      background-size:cover; background-position:center; min-height:70vh; display:grid; place-items:center;
+    }
+    .hero .inner{max-width:1100px; padding:60px 24px; text-align:center}
+    .title{font-size: clamp(36px, 5vw, 80px); margin:0; letter-spacing:.6px}
+    .subtitle{font-size: clamp(16px, 2vw, 22px); color:var(--muted); margin:14px 0 28px}
+    .btn{display:inline-block; padding:12px 18px; border-radius:14px; border:1px solid rgba(255,255,255,.14); text-decoration:none; color:var(--text); box-shadow:var(--shadow)}
+    .btn.gradient{border:none; background:linear-gradient(135deg, var(--brand), var(--brand-2)); color:#001; font-weight:700}
+
+    /* ---------- Sections ---------- */
+    section{max-width:1200px; margin:0 auto; padding:60px 20px}
+    h2{font-size: clamp(26px, 3vw, 40px); margin:0 0 16px}
+    .lead{color:var(--muted); margin-top:0}
+
+    /* Cards / grids */
+    .grid{display:grid; gap:20px}
+    .grid.cols-3{grid-template-columns:repeat(3, minmax(0,1fr))}
+    .grid.cols-2{grid-template-columns:repeat(2, minmax(0,1fr))}
+    @media (max-width: 920px){ .grid.cols-3{grid-template-columns:1fr 1fr} }
+    @media (max-width: 650px){ .grid.cols-3, .grid.cols-2{grid-template-columns:1fr} }
+
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01)); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow)}
+    .card h3{margin:0 0 8px}
+    .pill{display:inline-block; font-size:12px; padding:6px 10px; border-radius:999px; background:rgba(124,196,255,.12); border:1px solid rgba(124,196,255,.35)}
+
+    /* ---------- Gallery ---------- */
+    .gallery{display:grid; grid-template-columns:repeat(12,1fr); gap:12px}
+    .g-item{position:relative; overflow:hidden; border-radius:18px; aspect-ratio:1/1; grid-column: span 3; cursor:pointer}
+    .g-item.large{grid-column: span 6}
+    .g-item img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .35s ease}
+    .g-item:hover img{transform:scale(1.06)}
+    .g-cap{position:absolute; inset:auto 8px 8px 8px; background:rgba(0,0,0,.45); color:#fff; font-size:12px; padding:6px 8px; border-radius:10px}
+
+    /* Lightbox */
+    .lightbox{position:fixed; inset:0; background:rgba(0,0,0,.8); display:none; align-items:center; justify-content:center; z-index:50}
+    .lightbox.open{display:flex}
+    .lightbox img{max-width:92vw; max-height:82vh; border-radius:18px; box-shadow:var(--shadow)}
+    .lightbox .close{position:absolute; top:20px; right:20px; background:var(--glass); border:1px solid rgba(255,255,255,.2); color:#fff; padding:10px 14px; border-radius:12px; cursor:pointer}
+
+    /* ---------- Timeline ---------- */
+    .timeline{position:relative; margin-top:10px}
+    .timeline:before{content:""; position:absolute; left:8px; top:0; bottom:0; width:2px; background:linear-gradient(var(--brand), transparent)}
+    .t-item{position:relative; margin:18px 0 18px 24px}
+    .t-item:before{content:""; position:absolute; left:-23px; top:4px; height:12px; width:12px; border-radius:50%; background:linear-gradient(135deg,var(--brand),var(--brand-2)); box-shadow:0 0 0 3px rgba(124,196,255,.15)}
+
+    /* ---------- Footer ---------- */
+    footer{padding:40px 20px; text-align:center; color:var(--muted)}
+    .heart{filter: drop-shadow(0 0 6px rgba(142,245,218, .8))}
+
+    /* Utilities */
+    .row{display:flex; gap:16px; flex-wrap:wrap; align-items:center}
+    .row > *{flex:1}
+    .center{text-align:center}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <div class="logo"><span class="dot"></span> <span>Beliebers Hub</span></div>
+      <nav>
+        <a href="#about">About</a>
+        <a href="#music">Music</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#timeline">Timeline</a>
+        <a href="#join" class="cta">Join</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero" id="top">
+    <div class="inner">
+      <h1 class="title">Justin Bieber</h1>
+      <p class="subtitle">Singer · Songwriter · Performer — welcome to a fan‑made tribute with photos, music, and milestones.</p>
+      <div class="row center">
+        <a class="btn gradient" href="#music">▶ Listen now</a>
+        <a class="btn" href="#gallery">Browse photos</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <h2>About Justin</h2>
+    <p class="lead">From viral YouTube covers to global stardom, Justin Bieber has delivered era‑defining pop and R&B across albums like <em>My World 2.0</em>, <em>Purpose</em>, <em>Changes</em>, and <em>Justice</em>. This page curates highlights for fellow Beliebers — for fun and for fandom. 💫</p>
+    <div class="grid cols-3">
+      <div class="card">
+        <h3>Vocals & Style</h3>
+        <p>Signature falsetto and smooth pop/R&B blend, collaborative tracks with artists around the world, and a constant evolution of sound and look.</p>
+      </div>
+      <div class="card">
+        <h3>Achievements</h3>
+        <p>Billions of streams, multiple No.1 hits, GRAMMY wins and nominations, record‑breaking tours, and a devoted global fanbase.</p>
+      </div>
+      <div class="card">
+        <h3>Community</h3>
+        <p>Philanthropy, awareness campaigns, and an active presence that keeps fans involved through socials, pop‑ups, and surprise performances.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="music">
+    <h2>Music & Videos</h2>
+    <p class="lead">Hit play on a few favorites. (Embeds are from YouTube — you can replace with your own picks.)</p>
+    <div class="grid cols-2">
+      <div class="card">
+        <h3>Peaches (Live on NPR Tiny Desk)</h3>
+        <div style="position:relative;padding-top:56.25%">
+          <iframe style="position:absolute;inset:0;border:0;width:100%;height:100%" src="https://www.youtube.com/embed/tQ0yjYUFKAE" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Sorry (Official)</h3>
+        <div style="position:relative;padding-top:56.25%">
+          <iframe style="position:absolute;inset:0;border:0;width:100%;height:100%" src="https://www.youtube.com/embed/fRh_vgS2dFE" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="gallery">
+    <h2>Photo Gallery</h2>
+    <p class="lead">Tap any photo to view it larger. Replace the placeholder URLs in <code>images</code> with photos you have rights to use.</p>
+
+    <div class="gallery" id="galleryGrid"></div>
+
+    <div class="lightbox" id="lightbox" aria-hidden="true">
+      <button class="close" id="lightboxClose" aria-label="Close">✕</button>
+      <img id="lightboxImg" alt="Expanded gallery item" />
+    </div>
+  </section>
+
+  <section id="timeline">
+    <h2>Milestones</h2>
+    <div class="timeline">
+      <div class="t-item card">
+        <strong>2009</strong> — Breakout with <em>My World</em>, meets Usher, and launches into mainstream charts.
+      </div>
+      <div class="t-item card">
+        <strong>2015</strong> — <em>Purpose</em> era: "What Do You Mean?", "Sorry", and a massive world tour.
+      </div>
+      <div class="t-item card">
+        <strong>2020–2021</strong> — <em>Changes</em> and <em>Justice</em> deliver hits like "Intentions" and "Peaches".
+      </div>
+      <div class="t-item card">
+        <strong>2024–2025</strong> — Surprise cameos and festival appearances keep fans guessing what's next.
+      </div>
+    </div>
+  </section>
+
+  <section id="join">
+    <h2>Join the Fanlist</h2>
+    <p class="lead">Get occasional updates when we refresh photos or add new highlights.</p>
+    <form class="card" onsubmit="event.preventDefault(); subscribe();">
+      <div class="row">
+        <label style="display:block">
+          <div>Name</div>
+          <input id="name" required placeholder="Your name" style="width:100%;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.04);color:var(--text)">
+        </label>
+        <label style="display:block">
+          <div>Email</div>
+          <input id="email" type="email" required placeholder="you@example.com" style="width:100%;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.04);color:var(--text)">
+        </label>
+      </div>
+      <div style="margin-top:14px; display:flex; gap:12px; align-items:center">
+        <button class="btn gradient" type="submit">Sign me up</button>
+        <span id="status" class="pill" aria-live="polite" style="display:none"></span>
+      </div>
+    </form>
+  </section>
+
+  <footer>
+    Made with <span class="heart">❤</span> by fans. This is an unofficial fanpage.
+  </footer>
+
+  <script>
+    // ===== Smooth scroll for internal links =====
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if(target){ e.preventDefault(); target.scrollIntoView({behavior:'smooth'}); }
+      });
+    });
+
+    // ===== Gallery images =====
+    // Replace these URLs with photos you have permission to use.
+    // Suggested sources are listed below in the HTML comment near the end of this file.
+    const images = [
+      {
+        src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Justin_Bieber_%28cropped%29.png/528px-Justin_Bieber_%28cropped%29.png',
+        alt: 'Justin Bieber portrait', cap: 'Portrait (Wikimedia Commons)', large: true
+      },
+      {
+        src: 'https://images.unsplash.com/photo-1483412033650-1015ddeb83d1?q=80&w=1200&auto=format&fit=crop',
+        alt: 'Concert crowd lights', cap: 'Tour vibes — placeholder (Unsplash)'
+      },
+      {
+        src: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1200&auto=format&fit=crop',
+        alt: 'Stage spotlight', cap: 'Stage aesthetic — placeholder (Unsplash)'
+      },
+      {
+        src: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1200&auto=format&fit=crop',
+        alt: 'Hands in the air', cap: 'Crowd energy — placeholder (Unsplash)'
+      },
+      {
+        src: 'https://images.unsplash.com/photo-1565035010268-a3816f98589e?q=80&w=1200&auto=format&fit=crop',
+        alt: 'Microphone close-up', cap: 'Mic check — placeholder (Unsplash)'
+      },
+      {
+        src: 'https://images.unsplash.com/photo-1494232410401-ad00d5433cfa?q=80&w=1200&auto=format&fit=crop',
+        alt: 'Backstage moment', cap: 'Backstage — placeholder (Unsplash)'
+      }
+    ];
+
+    const grid = document.getElementById('galleryGrid');
+    images.forEach((img)=>{
+      const item = document.createElement('figure');
+      item.className = 'g-item' + (img.large ? ' large' : '');
+      item.innerHTML = `<img loading="lazy" src="${img.src}" alt="${img.alt}"><figcaption class="g-cap">${img.cap||''}</figcaption>`;
+      item.addEventListener('click',()=>openLightbox(img.src, img.alt));
+      grid.appendChild(item);
+    });
+
+    // ===== Lightbox logic =====
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lightboxImg');
+    const lbClose = document.getElementById('lightboxClose');
+    function openLightbox(src, alt){ lb.classList.add('open'); lb.setAttribute('aria-hidden','false'); lbImg.src = src; lbImg.alt = alt; document.body.style.overflow='hidden'; }
+    function closeLightbox(){ lb.classList.remove('open'); lb.setAttribute('aria-hidden','true'); lbImg.src=''; document.body.style.overflow=''; }
+    lb.addEventListener('click', (e)=>{ if(e.target===lb) closeLightbox(); });
+    lbClose.addEventListener('click', closeLightbox);
+    window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeLightbox(); });
+
+    // ===== Join form (demo only) =====
+    function subscribe(){
+      const status = document.getElementById('status');
+      const name = document.getElementById('name').value.trim();
+      status.style.display='inline-block';
+      status.textContent = `Thanks, ${name||'Belieber'}! You\'re on the list ✨`;
+    }
+    window.subscribe = subscribe;
+  </script>
+
+  <!--
+  IMAGE SUGGESTIONS (swap into the gallery above):
+  • Clean portrait (free to use with attribution):
+    - Wikimedia Commons: "Justin Bieber (cropped).png" — https://commons.wikimedia.org/wiki/File:Justin_Bieber_(cropped).png
+  • Recent appearances / style moments:
+    - Super Bowl 2024 appearance (Getty via Teen Vogue article)
+    - Coachella 2024 cameo (press photos via reputable outlets)
+    - 2025 buzz‑cut street style photos (editorial news sites)
+  • Concert shots you or friends took (with permission), or licensed stock of crowds/stage for ambience.
+
+  ⚠️ Always check and respect the photo license and required credits.
+  -->
+</body>
+</html>
